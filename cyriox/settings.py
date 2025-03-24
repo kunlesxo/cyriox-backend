@@ -62,7 +62,7 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "https://cyriox-workforce.vercel.app",  # React frontend
 ]
-
+CORS_ALLOW_ALL_ORIGINS = True 
 ROOT_URLCONF = 'cyriox.urls'
 AUTH_USER_MODEL = "user.User"
 
