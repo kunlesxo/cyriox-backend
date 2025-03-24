@@ -60,7 +60,7 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # React frontend
+    "https://cyriox-workforce.vercel.app",  # React frontend
 ]
 
 ROOT_URLCONF = 'cyriox.urls'
