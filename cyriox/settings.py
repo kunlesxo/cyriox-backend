@@ -15,7 +15,12 @@ SECRET_KEY = 'django-insecure-^qc1*6z3(sl679=#ay&!)v@0(mglcnr#*6$oqu0kafb8123ik0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ 
+
+     "secondary-chad-cirus-03a80251.koyeb.app",
+    "127.0.0.1",  # For local testing
+    "localhost",
+]
 
 
 # Application definition
@@ -61,7 +66,8 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "https://cyriox-workforce.vercel.app",
-    "https://secondary-chad-cirus-03a80251.koyeb.app",
+    "https://127.0.0.1:8000"
+   
 ]
 CORS_ALLOW_ALL_ORIGINS = True 
 ROOT_URLCONF = 'cyriox.urls'
