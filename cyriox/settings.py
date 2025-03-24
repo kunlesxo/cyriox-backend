@@ -60,7 +60,8 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "https://cyriox-workforce.vercel.app",  # React frontend
+    "https://cyriox-workforce.vercel.app",
+    "https://secondary-chad-cirus-03a80251.koyeb.app",
 ]
 CORS_ALLOW_ALL_ORIGINS = True 
 ROOT_URLCONF = 'cyriox.urls'
