@@ -170,9 +170,12 @@ class GetUserDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        serializer = UserSerializer(user)
+        if not request.user or not request.user.is_authenticated:
+            return Response({"error": "User is not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = UserSerializer(request.user)
         return Response({"status": "success", "user": serializer.data}, status=status.HTTP_200_OK)
+
 
 
 # ✅ Update User Profile
