@@ -1,4 +1,5 @@
 import uuid
+import pyotp
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -45,6 +46,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # ✅ 2FA Fields
+    two_factor_enabled = models.BooleanField(default=False)
+    otp_secret = models.CharField(max_length=32, blank=True, null=True)
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
@@ -53,11 +58,24 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.username} ({self.role})"
 
-# 🔹 Profile Model to store additional user details
+    def generate_otp_secret(self):
+        """Generates a new OTP secret for 2FA"""
+        self.otp_secret = pyotp.random_base32()
+        self.save()
+
+    def get_totp(self):
+        """Returns a TOTP object using the user's OTP secret"""
+        if self.otp_secret:
+            return pyotp.TOTP(self.otp_secret)
+        return None
+
+# 🔹 Extended Profile Model
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     company_name = models.CharField(max_length=255, blank=True, null=True)  # For Distributors
     address = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to="profile_pictures/", blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

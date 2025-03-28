@@ -19,3 +19,9 @@ class IsSupportorIsAdminorIsManager(BasePermission):
     def has_permission(self, request, view):
         return bool(
             request.user.is_authenticated and request.user.role in {User.ROLE.MANAGER, User.ROLE.SUPPORT, User.ROLE.ADMIN})
+    
+
+class IsAdminUserCustom(BasePermission):
+    """Allow access only to Admin users."""
+    def has_permission(self, request, view):
+        return bool(request.user.is_authenticated and getattr(request.user, "role", None) == getattr(User.ROLE, "ADMIN", None))    

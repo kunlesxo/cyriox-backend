@@ -1,6 +1,14 @@
 
 from datetime import timedelta
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load .env variables
+
+PAYSTACK_SECRET_KEY = os.getenv("PAYSTACK_SECRET_KEY")
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,12 +42,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'user',
+    'distributor',
+    "notification",
+    'message',
      
     "rest_framework",
     "corsheaders",
+    'django_filters',
     "rest_framework_simplejwt",
     "channels",
     'drf_yasg',
+    'transaction',
+    'rest_framework_simplejwt.token_blacklist',
 
 ]
 
@@ -62,7 +76,40 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,  # Adjust this number as needed
 }
+
+
+
+
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)  # Ensure the logs directory exists
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': LOG_DIR / 'django.log',  # Ensure the log directory exists
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 
 CORS_ALLOWED_ORIGINS = [
     "https://cyriox-workforce.vercel.app",
@@ -102,6 +149,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cyriox.wsgi.application'
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Use Redis in production
+    },
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -109,8 +162,7 @@ WSGI_APPLICATION = 'cyriox.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'NAME': str(BASE_DIR / 'db.sqlite3'),    }
 }
 
 SIMPLE_JWT = {
@@ -118,6 +170,9 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=21),
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,  # Ensure this is set to True
+    "AUTH_HEADER_TYPES": ("Bearer",)
 }
 
 REST_FRAMEWORK = {

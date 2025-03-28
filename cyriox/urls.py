@@ -23,6 +23,10 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("user.urls")),
+    path('api/', include('distributor.urls')),
+    path('transaction', include('transaction.urls')),
+    path('message', include('message.urls')),
+    path('notification', include('notification.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
